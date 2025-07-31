@@ -1,82 +1,45 @@
-import { Plugin, PluginSearch, PluginContent } from '@lnreader/core';
+module.exports = {
+  id: "kolnovel",
+  name: "KolNovel",
+  version: "1.1.16",
+  icon: "https://kolnovel.com/favicon.ico",
+  site: "https://kolnovel.com/",
+  async popularNovels(page) {
+    const url = `https://kolnovel.com/page/${page}/`;
+    const body = await fetch(url).then(res => res.text());
+    const loadedCheerio = cheerio.load(body);
+    const novels = [];
 
-const BASE_URL = 'https://kolnovel.com';
+    loadedCheerio(".post-title").each((_, element) => {
+      const name = loadedCheerio(element).text().trim();
+      const link = loadedCheerio(element).find("a").attr("href");
+      novels.push({ name, url: link });
+    });
 
-const headers = {
-  'User-Agent': 'Mozilla/5.0',
-  'Referer': BASE_URL,
-};
-
-/** البحث */
-const searchNovels: PluginSearch['searchNovels'] = async (searchTerm) => {
-  const url = `${BASE_URL}/?s=${encodeURIComponent(searchTerm)}`;
-  const response = await fetch(url, { headers });
-  const html = await response.text();
-
-  const $ = cheerio.load(html);
-  const results = [];
-
-  $('.post-title a').each((_, el) => {
-    const novelName = $(el).text().trim();
-    const novelUrl = $(el).attr('href');
-    if (novelName && novelUrl) {
-      results.push({
-        name: novelName,
-        url: novelUrl,
-        cover: null,
-      });
-    }
-  });
-
-  return results;
-};
-
-/** تفاصيل الرواية والفصول */
-const parseNovelAndChapters: PluginContent['parseNovelAndChapters'] = async (novelUrl) => {
-  const response = await fetch(novelUrl, { headers });
-  const html = await response.text();
-  const $ = cheerio.load(html);
-
-  const name = $('h1').first().text().trim();
-  const cover = $('figure img').attr('src') || null;
-  const summary = $('.entry-content p').first().text().trim();
-
-  const chapters = [];
-  $('.su-button-center a').each((_, el) => {
-    const chapterName = $(el).text().trim();
-    const chapterUrl = $(el).attr('href');
-    if (chapterUrl) {
-      chapters.push({ name: chapterName, url: chapterUrl, releaseTime: null });
-    }
-  });
-
-  return { name, cover, summary, chapters };
-};
-
-/** محتوى الفصل */
-const parseChapter: PluginContent['parseChapter'] = async (chapterUrl) => {
-  const response = await fetch(chapterUrl, { headers });
-  const html = await response.text();
-  const $ = cheerio.load(html);
-
-  const chapterText = $('.entry-content').html();
-  return chapterText || '';
-};
-
-/** التصدير النهائي */
-const plugin: Plugin = {
-  id: 'kolnovel',
-  name: 'KolNovel',
-  version: '1.0.0',
-  icon: '🌐',
-  site: BASE_URL,
-  content: {
-    parseNovelAndChapters,
-    parseChapter,
+    return novels;
   },
-  search: {
-    searchNovels,
-  },
-};
 
-export default plugin;
+  async parseNovelAndChapters(novelUrl) {
+    const body = await fetch(novelUrl).then(res => res.text());
+    const loadedCheerio = cheerio.load(body);
+    const name = loadedCheerio("h1").text().trim();
+    const cover = loadedCheerio("img").first().attr("src");
+    const summary = loadedCheerio(".summary").text().trim();
+    const chapters = [];
+
+    loadedCheerio(".chapter-list a").each((_, el) => {
+      const chapterName = loadedCheerio(el).text().trim();
+      const chapterUrl = loadedCheerio(el).attr("href");
+      chapters.push({ name: chapterName, url: chapterUrl });
+    });
+
+    return { name, cover, summary, chapters };
+  },
+
+  async parseChapter(chapterUrl) {
+    const body = await fetch(chapterUrl).then(res => res.text());
+    const loadedCheerio = cheerio.load(body);
+    const content = loadedCheerio(".entry-content").html();
+    return content;
+  }
+};
