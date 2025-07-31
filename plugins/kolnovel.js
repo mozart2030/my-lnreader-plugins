@@ -1,72 +1,82 @@
-function manifest() {
-  return {
-    id: "kolnovel",
-    name: "KolNovel",
-    author: "محمد",
-    version: "1.0.0",
-    icon: "https://kolnovel.com/favicon.ico",
-    baseUrl: "https://kolnovel.com",
-    lang: "ar",
-    tags: ["Arabic"],
-    type: "novel"
-  };
-}
+import { Plugin, PluginSearch, PluginContent } from '@lnreader/core';
 
-async function search(query) {
-  const url = `https://kolnovel.com/?s=${encodeURIComponent(query)}`;
-  const res = await fetch(url);
-  const html = await res.text();
-  const doc = new DOMParser().parseFromString(html, "text/html");
+const BASE_URL = 'https://kolnovel.com';
 
+const headers = {
+  'User-Agent': 'Mozilla/5.0',
+  'Referer': BASE_URL,
+};
+
+/** البحث */
+const searchNovels: PluginSearch['searchNovels'] = async (searchTerm) => {
+  const url = `${BASE_URL}/?s=${encodeURIComponent(searchTerm)}`;
+  const response = await fetch(url, { headers });
+  const html = await response.text();
+
+  const $ = cheerio.load(html);
   const results = [];
-  const items = doc.querySelectorAll(".post");
 
-  for (const item of items) {
-    const a = item.querySelector(".entry-title a");
-    const img = item.querySelector("img");
-
-    if (a) {
+  $('.post-title a').each((_, el) => {
+    const novelName = $(el).text().trim();
+    const novelUrl = $(el).attr('href');
+    if (novelName && novelUrl) {
       results.push({
-        title: a.textContent.trim(),
-        url: a.href,
-        cover: img?.src || ""
+        name: novelName,
+        url: novelUrl,
+        cover: null,
       });
-    }
-  }
-
-  return results;
-}
-
-async function fetchNovel(url) {
-  const res = await fetch(url);
-  const html = await res.text();
-  const doc = new DOMParser().parseFromString(html, "text/html");
-
-  const title = doc.querySelector(".entry-title")?.textContent.trim();
-  const cover = doc.querySelector(".entry-content img")?.src || "";
-  const summary = doc.querySelector(".entry-content p")?.textContent.trim() || "";
-  const author = "غير معروف";
-
-  const chapters = [];
-  const links = doc.querySelectorAll(".entry-content a");
-
-  links.forEach((link) => {
-    const name = link.textContent.trim();
-    const chapterUrl = link.href;
-
-    if (name && chapterUrl.includes("kolnovel.com")) {
-      chapters.push({ name, url: chapterUrl });
     }
   });
 
-  return { title, cover, author, summary, chapters };
-}
+  return results;
+};
 
-async function fetchChapter(url) {
-  const res = await fetch(url);
-  const html = await res.text();
-  const doc = new DOMParser().parseFromString(html, "text/html");
+/** تفاصيل الرواية والفصول */
+const parseNovelAndChapters: PluginContent['parseNovelAndChapters'] = async (novelUrl) => {
+  const response = await fetch(novelUrl, { headers });
+  const html = await response.text();
+  const $ = cheerio.load(html);
 
-  const content = doc.querySelector(".entry-content");
-  return content?.innerHTML || "لا يوجد محتوى";
-}
+  const name = $('h1').first().text().trim();
+  const cover = $('figure img').attr('src') || null;
+  const summary = $('.entry-content p').first().text().trim();
+
+  const chapters = [];
+  $('.su-button-center a').each((_, el) => {
+    const chapterName = $(el).text().trim();
+    const chapterUrl = $(el).attr('href');
+    if (chapterUrl) {
+      chapters.push({ name: chapterName, url: chapterUrl, releaseTime: null });
+    }
+  });
+
+  return { name, cover, summary, chapters };
+};
+
+/** محتوى الفصل */
+const parseChapter: PluginContent['parseChapter'] = async (chapterUrl) => {
+  const response = await fetch(chapterUrl, { headers });
+  const html = await response.text();
+  const $ = cheerio.load(html);
+
+  const chapterText = $('.entry-content').html();
+  return chapterText || '';
+};
+
+/** التصدير النهائي */
+const plugin: Plugin = {
+  id: 'kolnovel',
+  name: 'KolNovel',
+  version: '1.0.0',
+  icon: '🌐',
+  site: BASE_URL,
+  content: {
+    parseNovelAndChapters,
+    parseChapter,
+  },
+  search: {
+    searchNovels,
+  },
+};
+
+export default plugin;
