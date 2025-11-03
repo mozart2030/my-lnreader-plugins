@@ -1,22 +1,31 @@
 {
-  "id": "kolnovel-arabic",
+  "id": "kolnovel",
   "name": "KolNovel",
-  "version": "1.0.0",
-  "site": "https://kolnovel.com/", 
-  "lang": "ar",
+  "version": 1,
+  "site": "https://kolnovel.com/",
   "icon": "https://kolnovel.com/wp-content/uploads/2022/08/cropped-kolnovel-32x32.png",
+  "lang": "ar",
   "hasUpdate": true,
   "hasSearch": true,
   "filters": [
     {
       "id": "sort",
       "name": "الترتيب",
-      "values": ["أحدث", "تم التحديث", "المشهورة", "الإضافات الجديدة"]
+      "values": [
+        {"id": "new", "name": "أحدث"},
+        {"id": "updated", "name": "تم التحديث"},
+        {"id": "popular", "name": "المشهورة"},
+        {"id": "added", "name": "الإضافات الجديدة"}
+      ]
     },
     {
       "id": "status",
       "name": "الحالة",
-      "values": ["مكتملة", "قيد الإصدار", "متوقفة"]
+      "values": [
+        {"id": "completed", "name": "مكتملة"},
+        {"id": "ongoing", "name": "قيد الإصدار"},
+        {"id": "hiatus", "name": "متوقفة"}
+      ]
     }
   ],
   "chapters": {
@@ -24,4 +33,4 @@
     "list": "div.chapter-list a",
     "selector": "div.text"
   }
-                 }
+         }
