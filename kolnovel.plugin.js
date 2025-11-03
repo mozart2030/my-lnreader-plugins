@@ -3,10 +3,11 @@
   "name": "KolNovel",
   "version": 1,
   "site": "https://kolnovel.com/",
-  "icon": "https://kolnovel.com/wp-content/uploads/2022/08/cropped-kolnovel-32x32.png",
+  "icon": "https://cdn-icons-png.flaticon.com/512/2909/2909546.png",
   "lang": "ar",
   "hasUpdate": true,
   "hasSearch": true,
+  
   "filters": [
     {
       "id": "sort",
@@ -17,20 +18,38 @@
         {"id": "popular", "name": "المشهورة"},
         {"id": "added", "name": "الإضافات الجديدة"}
       ]
-    },
-    {
-      "id": "status",
-      "name": "الحالة",
-      "values": [
-        {"id": "completed", "name": "مكتملة"},
-        {"id": "ongoing", "name": "قيد الإصدار"},
-        {"id": "hiatus", "name": "متوقفة"}
-      ]
     }
   ],
-  "chapters": {
-    "title": "h3.entry-title",
-    "list": "div.chapter-list a",
-    "selector": "div.text"
+
+  "search": function(searchTerm) {
+    return [];
+  },
+  
+  "getList": function(page, filters) {
+    return [];
+  },
+  
+  "getDetails": function(url) {
+    return {
+      title: "عنوان تجريبي",
+      author: "مؤلف",
+      desc: "وصف تجريبي للرواية",
+      url: url,
+      status: "مكتملة"
+    };
+  },
+  
+  "getChapters": function(url) {
+    return [
+      {
+        name: "الفصل الأول",
+        url: url + "/chapter-1",
+        releaseTime: "2024-01-01"
+      }
+    ];
+  },
+  
+  "readChapter": function(url) {
+    return "<p>هذا محتوى تجريبي للفصل. يجب تطوير هذا الجزء ليعمل مع الموقع الحقيقي.</p>";
   }
-         }
+}
