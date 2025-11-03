@@ -1,31 +1,27 @@
-module.exports = {
-    id: 'kolnovel-arabic',
-    name: 'KolNovel',
-    version: '1.0.0',
-    site: 'https://kolnovel.com/',
-    lang: 'ar',
-    icon : "https://cdn-icons-png.flaticon.com/512/2909/2909546.png",
-    hasUpdate: false,
-    hasSearch: true,
-    
-    // الدوال الأساسية
-    search: function (searchTerm) {
-        return [];
+{
+  "id": "kolnovel-arabic",
+  "name": "KolNovel",
+  "version": "1.0.0",
+  "site": "https://kolnovel.com/", 
+  "lang": "ar",
+  "icon": "https://kolnovel.com/wp-content/uploads/2022/08/cropped-kolnovel-32x32.png",
+  "hasUpdate": true,
+  "hasSearch": true,
+  "filters": [
+    {
+      "id": "sort",
+      "name": "الترتيب",
+      "values": ["أحدث", "تم التحديث", "المشهورة", "الإضافات الجديدة"]
     },
-    
-    getList: function (page) {
-        return [];
-    },
-    
-    getDetails: function (url) {
-        return {};
-    },
-    
-    getChapters: function (url) {
-        return [];
-    },
-    
-    readChapter: function (url) {
-        return '';
+    {
+      "id": "status",
+      "name": "الحالة",
+      "values": ["مكتملة", "قيد الإصدار", "متوقفة"]
     }
-};
+  ],
+  "chapters": {
+    "title": "h3.entry-title",
+    "list": "div.chapter-list a",
+    "selector": "div.text"
+  }
+                 }
