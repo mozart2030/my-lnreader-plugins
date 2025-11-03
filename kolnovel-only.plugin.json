@@ -1,32 +1,16 @@
 {
-  "$schema": "https://raw.githubusercontent.com/LNReader/lnreader-plugins/dist/plugins.schema.json",
-  "plugins": [
-    {
-      "id": "kolnovel 1",
-      "name": "KolNovel 1",
-      "site": "https://kolnovel.com/",
-      "lang": "ar",
-      "version": "1.0.0",
-      "icon": "https://kolnovel.com/wp-content/uploads/2022/08/cropped-kolnovel-32x32.png",
-      "hasUpdate": true,
-      "hasSearch": true,
-      "filters": [
-        {
-          "id": "sort",
-          "name": "الترتيب",
-          "values": ["أحدث", "تم التحديث", "المشهورة", "الإضافات الجديدة"]
-        },
-        {
-          "id": "status",
-          "name": "الحالة",
-          "values": ["مكتملة", "قيد الإصدار", "متوقفة"]
-        }
-      ],
-      "chapters": {
-        "title": "h3.entry-title",
-        "list": "div.chapter-list a",
-        "selector": "div.text"
-      }
-    }
-  ]
+  "id": "kolnovel-only",
+  "name": "KolNovel Only",
+  "version": 1,
+  "url": "https://raw.githubusercontent.com/mozart2030/my-lnreader-plugins/refs/heads/main/kolnovel-only/kolnovel-only.js",
+  "icon": "https://raw.githubusercontent.com/mozart2030/my-lnreader-plugins/refs/heads/main/kolnovel-only/icon.png",
+  "author": "Mozart",
+  "description": "KolNovel Only",
+  "tags": [
+    "arabic",
+    "novels"
+  ],
+  "website": "https://kolnovel.com",
+  "hasUpdate": false,
+  "hasTracker": false
 }
