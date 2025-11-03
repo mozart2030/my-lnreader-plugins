@@ -4,7 +4,7 @@ module.exports = {
     version: '1.0.0',
     site: 'https://kolnovel.com/',
     lang: 'ar',
-    icon: 'https://kolnovel.com/wp-content/uploads/2022/08/cropped-kolnovel-32x32.png',
+    icon : "https://cdn-icons-png.flaticon.com/512/2909/2909546.png",
     hasUpdate: false,
     hasSearch: true,
     
